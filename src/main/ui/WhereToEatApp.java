@@ -9,7 +9,9 @@ public class WhereToEatApp {
     private User user1;
     private RestaurantList selectedList;
 
-    // Partial code borrowed from CPSC210/TellerApp
+    /*
+     * Partial code borrowed from CPSC210/TellerApp
+     */
     public WhereToEatApp() {
         boolean keepGoing = true;
         String command;
@@ -31,7 +33,9 @@ public class WhereToEatApp {
         System.out.println("\nGoodbye!");
     }
 
-    // Initialise fields
+    /*
+     * Initialise fields
+     */
     private void init() {
         input = new Scanner(System.in);
         user1 = new User(promptForString("Welcome! Enter a username: "));
@@ -41,6 +45,9 @@ public class WhereToEatApp {
         selectedList = user1.getAllLists().get(0);
     }
 
+    /*
+     * Prompts for a string
+     */
     private String promptForString(String msg) {
         System.out.print(msg);
         String s;
@@ -48,7 +55,9 @@ public class WhereToEatApp {
         return s;
     }
 
-    // Repeatedly prompts for a valid entry of index between min and max (inclusive)
+    /*
+     * Repeatedly prompts for a valid entry of index between min and max (inclusive)
+     */
     private int promptForIndex(String msg, int min, int max) {
         int index = -1;
         boolean keepGoing = true;
@@ -67,7 +76,6 @@ public class WhereToEatApp {
                 input.nextLine();
             }
         }
-
         return index;
     }
 
@@ -110,6 +118,9 @@ public class WhereToEatApp {
         }
     }
 
+    /*
+     * Adds restaurant object to selectedList
+     */
     private void doAddRestaurant() {
         String name = promptForString("\nEnter the name of the restaurant: ");
         if (selectedList.add(new Restaurant(name))) {
@@ -119,6 +130,9 @@ public class WhereToEatApp {
         }
     }
 
+    /*
+     * Merges content of a list with selectedList.
+     */
     private void doAddList() {
         if (user1.getAllLists().size() <= 1) {
             System.out.println("You do not have another list! Choose (6) to create a new one. ");
@@ -134,6 +148,9 @@ public class WhereToEatApp {
                 listToAdd.getName(), selectedList.getName());
     }
 
+    /*
+     * Prints all lists the user has.
+     */
     private void printAllLists() {
         System.out.printf("\n%s's lists: \n", user1.getUsername());
         for (int i = 0; i < user1.getAllLists().size(); i++) {
@@ -141,6 +158,9 @@ public class WhereToEatApp {
         }
     }
 
+    /*
+     * Rate a restaurant in selectedList
+     */
     private void doRateRestaurant() {
         if (selectedList.size() < 1) {
             System.out.println("Your list is empty! Choose (1) to add a restaurant.");
@@ -156,6 +176,9 @@ public class WhereToEatApp {
         System.out.println("Rating added. ");
     }
 
+    /*
+     * Prints all restaurants in selectedList
+     */
     private void printRestaurants() {
         System.out.printf("\nThere are %d restaurants on list \"%s\": \n",
                 selectedList.size(), selectedList.getName());
@@ -165,6 +188,9 @@ public class WhereToEatApp {
         }
     }
 
+    /*
+     * Gives user a restaurant suggestion. Prompts for visit.
+     */
     private void doGetSuggestion() {
         if (selectedList.size() < 1) {
             System.out.println("Your list is empty! Choose (1) to add a restaurant.");
@@ -184,6 +210,9 @@ public class WhereToEatApp {
         promptForString("\nEnter any key to return to menu: ");
     }
 
+    /*
+     * Switch to an existing list or add a new list
+     */
     private void doNewList() {
         int max = user1.getAllLists().size();
 
