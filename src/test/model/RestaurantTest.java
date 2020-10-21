@@ -2,6 +2,7 @@ package model;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
@@ -12,7 +13,7 @@ public class RestaurantTest {
     public void setUp() {
         restaurant1 = new Restaurant("Frank's");
         restaurant2 = new Restaurant("John's", 8);
-        restaurant3 = new Restaurant("Jack's",  12);
+        restaurant3 = new Restaurant("Jack's", 12);
     }
 
     @Test

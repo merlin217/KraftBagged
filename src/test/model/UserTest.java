@@ -1,6 +1,7 @@
 package model;
 
 import java.util.Arrays;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -17,7 +18,7 @@ public class UserTest {
 
         restaurant1 = new Restaurant("Frank's");
         restaurant2 = new Restaurant("John's", 8);
-        restaurant3 = new Restaurant("Jack's",  12);
+        restaurant3 = new Restaurant("Jack's", 12);
     }
 
     @Test

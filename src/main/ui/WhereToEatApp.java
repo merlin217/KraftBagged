@@ -127,7 +127,7 @@ public class WhereToEatApp {
 
         printAllLists();
         int choice = promptForIndex("Choose a list to merge with your current list: ",
-                                    0, user1.getAllLists().size() - 1);
+                0, user1.getAllLists().size() - 1);
         RestaurantList listToAdd = user1.getAllLists().get(choice);
         selectedList.add(listToAdd.getRestaurants());
         System.out.printf("%s successfully merged with %s. \n",
@@ -148,7 +148,7 @@ public class WhereToEatApp {
         }
         printRestaurants();
         int choice = promptForIndex("Choose a restaurant to rate: ",
-                                    0, selectedList.size() - 1);
+                0, selectedList.size() - 1);
         String ratingMsg = String.format(
                 "Enter a rating between 1 - 10 for %s: ", selectedList.get(choice).getName());
         int rating = promptForIndex(ratingMsg, 1, 10);
@@ -158,7 +158,7 @@ public class WhereToEatApp {
 
     private void printRestaurants() {
         System.out.printf("\nThere are %d restaurants on list \"%s\": \n",
-                        selectedList.size(), selectedList.getName());
+                selectedList.size(), selectedList.getName());
         for (int i = 0; i < selectedList.getRestaurants().size(); i++) {
             Restaurant restaurant = selectedList.get(i);
             System.out.printf("\t%d -> %s\n", i, restaurant.toString());
