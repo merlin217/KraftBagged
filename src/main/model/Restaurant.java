@@ -1,5 +1,9 @@
 package model;
 
+/*
+ * Restaurant object with unique id.
+ *  Has a rating field which is the average of all ratings it has received.
+ */
 public class Restaurant {
     private static int counter = 0; // tracks the number of restaurants created
     private int id;

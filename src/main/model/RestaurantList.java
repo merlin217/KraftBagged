@@ -3,6 +3,10 @@ package model;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/*
+ * An ordered list of restaurants,
+ *  with function to return a random one on the list as a suggestion.
+ */
 public class RestaurantList {
     private String name;
     private ArrayList<Restaurant> restaurants;
@@ -40,6 +44,9 @@ public class RestaurantList {
     /*
      * REQUIRES: index is not out of bound
      * EFFECTS: return the restaurant corresponding to the index
+     * NOTE: method called 'get' instead of 'getRestaurant' to
+     *      1. be consistent with the method naming that an ArrayList would have
+     *      2. help distinguish between this and getRestaurants()
      */
     public Restaurant get(int index) {
         return restaurants.get(index);

@@ -3,6 +3,12 @@ package model;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/*
+ * User object with unique id.
+ *  Can have multiple RestaurantLists
+ *  Keeps track of all restaurant ratings the user has made
+ *  Keeps track of the last restaurant the user visited
+ */
 public class User {
     private static int counter = 0;
     private int id;
@@ -78,5 +84,12 @@ public class User {
      */
     public double getRatingById(int id) {
         return allRatings.get(id);
+    }
+
+    /*
+     * EFFECTS: returns whether allRatings contains a rating for the specified restaurant
+     */
+    public boolean hasRatedRestaurant(int id) {
+        return allRatings.containsKey(id);
     }
 }

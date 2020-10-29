@@ -37,9 +37,12 @@ public class UserTest {
     // Test ratings
     public void test2() {
         assertEquals(0, user1.getAllRatings().size());
+        assertFalse(user1.hasRatedRestaurant(restaurant1.getId()));
         user1.rate(restaurant1, 10);
         user1.rate(restaurant2, 10);
         user1.rate(restaurant1, 5);
+        assertTrue(user1.hasRatedRestaurant(restaurant1.getId()));
+        assertFalse(user1.hasRatedRestaurant(restaurant3.getId()));
         assertEquals(5, user1.getRatingById(restaurant1.getId()));
         assertEquals(10, user1.getRatingById(restaurant2.getId()));
         assertEquals(2, user1.getAllRatings().size());

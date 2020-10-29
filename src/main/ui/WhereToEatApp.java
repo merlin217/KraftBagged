@@ -180,11 +180,24 @@ public class WhereToEatApp {
      * Prints all restaurants in selectedList
      */
     private void printRestaurants() {
+        if (selectedList.size() < 1) {
+            System.out.println("Your list is empty! Choose (1) to add a restaurant.");
+            return;
+        }
         System.out.printf("\nThere are %d restaurants on list \"%s\": \n",
                 selectedList.size(), selectedList.getName());
         for (int i = 0; i < selectedList.getRestaurants().size(); i++) {
             Restaurant restaurant = selectedList.get(i);
-            System.out.printf("\t%d -> %s\n", i, restaurant.toString());
+            String output = String.format("\t[%d] ... %s | Avg Rating: %d",
+                    i, restaurant.getName(), restaurant.getRatingRounded());
+
+            // Also print user rating if it exists
+            if (user1.hasRatedRestaurant(restaurant.getId())) {
+                output += String.format(" | Your Rating: %.2f", user1.getRatingById(restaurant.getId()));
+            } else {
+                output += " | You haven't rated this restaurant";
+            }
+            System.out.println(output);
         }
     }
 
