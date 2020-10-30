@@ -1,13 +1,22 @@
 package ui;
 
 import model.*;
+import persistence.JsonWriter;
+import persistence.JsonReader;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class WhereToEatApp {
     private Scanner input;
     private User user1;
     private RestaurantList selectedList;
+    private JsonWriter jsonWriter;
+    private JsonReader jsonReader;
+    private String userFile;
+    private static final String COUNTER_FILE = "./data/counter/Restaurants.json";
 
     /*
      * Partial code borrowed from CPSC210/TellerApp
@@ -24,6 +33,7 @@ public class WhereToEatApp {
             command = command.toLowerCase();
 
             if (command.equals("q")) {
+                saveCounter(); 
                 keepGoing = false;
             } else {
                 processCommand(command);
@@ -38,11 +48,13 @@ public class WhereToEatApp {
      */
     private void init() {
         input = new Scanner(System.in);
-        user1 = new User(promptForString("Welcome! Enter a username: "));
-        if (user1.getAllLists().size() == 0) {
+        String username = promptForString("Welcome! Enter a username: ");
+        initUserProfile(username);
+        if (user1.numOfLists() == 0) {
             user1.addList(new RestaurantList("default"));
         }
-        selectedList = user1.getAllLists().get(0);
+        selectedList = user1.getList(0);
+        syncCounter();
     }
 
     /*
@@ -89,6 +101,7 @@ public class WhereToEatApp {
         System.out.println("\t4 -> Get A Suggestion");
         System.out.println("\t5 -> View Restaurants");
         System.out.println("\t6 -> Switch To New List");
+        System.out.println("\ts -> Save Current Profile");
         System.out.println("\tq -> Quit");
     }
 
@@ -112,6 +125,9 @@ public class WhereToEatApp {
             case "6":
                 doNewList();
                 break;
+            case "s":
+                saveUserProfile();
+                break;
             default:
                 System.out.println("Selection not valid...");
                 break;
@@ -134,15 +150,15 @@ public class WhereToEatApp {
      * Merges content of a list with selectedList.
      */
     private void doAddList() {
-        if (user1.getAllLists().size() <= 1) {
+        if (user1.numOfLists() <= 1) {
             System.out.println("You do not have another list! Choose (6) to create a new one. ");
             return;
         }
 
         printAllLists();
         int choice = promptForIndex("Choose a list to merge with your current list: ",
-                0, user1.getAllLists().size() - 1);
-        RestaurantList listToAdd = user1.getAllLists().get(choice);
+                0, user1.numOfLists() - 1);
+        RestaurantList listToAdd = user1.getList(choice);
         selectedList.add(listToAdd.getRestaurants());
         System.out.printf("%s successfully merged with %s. \n",
                 listToAdd.getName(), selectedList.getName());
@@ -153,8 +169,8 @@ public class WhereToEatApp {
      */
     private void printAllLists() {
         System.out.printf("\n%s's lists: \n", user1.getUsername());
-        for (int i = 0; i < user1.getAllLists().size(); i++) {
-            System.out.printf("\t%d -> %s\n", i, user1.getAllLists().get(i).getName());
+        for (int i = 0; i < user1.numOfLists(); i++) {
+            System.out.printf("\t%d -> %s\n", i, user1.getList(i).getName());
         }
     }
 
@@ -227,7 +243,7 @@ public class WhereToEatApp {
      * Switch to an existing list or add a new list
      */
     private void doNewList() {
-        int max = user1.getAllLists().size();
+        int max = user1.numOfLists();
 
         printAllLists();
         System.out.printf("\t%d -> [Create A New List]\n", max);
@@ -236,7 +252,79 @@ public class WhereToEatApp {
             String listName = promptForString("Enter a name for the new list: ");
             user1.addList(new RestaurantList(listName));
         }
-        selectedList = user1.getAllLists().get(choice);
+        selectedList = user1.getList(choice);
         System.out.printf("Successfully switched to (%s). \n", selectedList.getName());
+    }
+
+    /*
+     * CREDIT: modified from WorkRoomApp.saveWorkRoom() found in CPSC210/JsonSerializationDemo
+     *         GitHub Link: https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
+     *
+     * EFFECTS: saves current user to a json file
+     */
+    private void saveUserProfile() {
+        userFile = String.format("./data/%s.json", user1.getUsername());
+        jsonWriter = new JsonWriter(userFile);
+        try {
+            jsonWriter.open();
+            jsonWriter.write(user1);
+            jsonWriter.close();
+            System.out.println("Saved " + user1.getUsername() + " to " + userFile);
+        } catch (IOException e) {
+            System.out.println("Unable to write to file: " + userFile);
+        }
+    }
+
+    /*
+     * EFFECTS: if a file of the specified name does not exist, initialise a new User
+     *          else, try reading user object from the file
+     */
+    private void initUserProfile(String username) {
+        userFile = String.format("./data/%s.json", username);
+        File destination = new File(userFile);
+        if (!destination.exists()) {
+            user1 = new User(username);
+            return;
+        }
+
+        jsonReader = new JsonReader(userFile);
+        try {
+            user1 = jsonReader.read();
+            System.out.println("User profile found! ");
+        } catch (IOException e) {
+            System.out.println("Error occurred when reading " + userFile);
+        }
+    }
+
+    /*
+     * EFFECTS: tries to read restaurant counter variable saved in COUNTER_FILE
+     */
+    private void syncCounter() {
+        try {
+            jsonReader = new JsonReader(COUNTER_FILE);
+            int counter = jsonReader.readCounter();
+            if (counter != 0) {
+                Restaurant.setCounter(counter);
+//                System.out.println("DEBUG: Counter set to " + counter);
+            }
+        } catch (IOException e) {
+            System.out.println("No counter file found. ");
+        }
+    }
+
+    /*
+     * REQUIRES: ./data/counter directory exists
+     * EFFECTS: saves the current restaurant counter to COUNTER_FILE
+     */
+    private void saveCounter() {
+        jsonWriter = new JsonWriter(COUNTER_FILE);
+        try {
+            jsonWriter.open();
+            jsonWriter.writeCounter(Restaurant.getCounter());
+            jsonWriter.close();
+//            System.out.println("DEBUG: Current restaurant counter: " + Restaurant.getCounter());
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file: " + COUNTER_FILE);
+        }
     }
 }

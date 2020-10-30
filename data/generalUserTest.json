@@ -1,0 +1,41 @@
+{
+    "lastVisitedId": -1,
+    "allLists": [
+        {
+            "name": "default",
+            "restaurants": [
+                {
+                    "name": "Joey",
+                    "rating": 0,
+                    "id": 1,
+                    "numRatings": 0
+                },
+                {
+                    "name": "Mcdonald's",
+                    "rating": 0,
+                    "id": 2,
+                    "numRatings": 0
+                }
+            ]
+        },
+        {
+            "name": "Lunch",
+            "restaurants": [
+                {
+                    "name": "Salading",
+                    "rating": 0,
+                    "id": 3,
+                    "numRatings": 0
+                },
+                {
+                    "name": "Luckin",
+                    "rating": 0,
+                    "id": 4,
+                    "numRatings": 0
+                }
+            ]
+        }
+    ],
+    "userName": "general user",
+    "allRatings": {}
+}

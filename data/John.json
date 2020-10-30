@@ -1,0 +1,41 @@
+{
+    "lastVisitedId": -1,
+    "allLists": [
+        {
+            "name": "default",
+            "restaurants": [
+                {
+                    "name": "Joey",
+                    "rating": 0,
+                    "id": 1,
+                    "numRatings": 0
+                },
+                {
+                    "name": "Kool",
+                    "rating": 0,
+                    "id": 2,
+                    "numRatings": 0
+                }
+            ]
+        },
+        {
+            "name": "Dinner",
+            "restaurants": [
+                {
+                    "name": "fanta",
+                    "rating": 0,
+                    "id": 3,
+                    "numRatings": 0
+                },
+                {
+                    "name": "lauda",
+                    "rating": 0,
+                    "id": 4,
+                    "numRatings": 0
+                }
+            ]
+        }
+    ],
+    "userName": "John",
+    "allRatings": {}
+}

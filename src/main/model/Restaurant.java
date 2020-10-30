@@ -1,5 +1,7 @@
 package model;
 
+import org.json.JSONObject;
+
 /*
  * Restaurant object with unique id.
  *  Has a rating field which is the average of all ratings it has received.
@@ -49,6 +51,21 @@ public class Restaurant {
         return rating;
     }
 
+    // persistence utility
+    public void setId(int someId) {
+        this.id = someId;
+    }
+
+    // persistence utility
+    public void setRating(double someRating) {
+        this.rating = someRating;
+    }
+
+    // persistence utility
+    public void setNumRatings(int someNumber) {
+        this.numRatings = someNumber;
+    }
+
     /*
      * EFFECTS: returns rating rounded to the closest integer
      */
@@ -79,5 +96,36 @@ public class Restaurant {
                 "[id = %d, name = %s, rating = %.2f, numRatings = %d]",
                 id, name, rating, numRatings);
         return outputStr;
+    }
+
+    /*
+     * CREDIT: modified from model.Thingy.toJson() found in CPSC210/JsonSerializationDemo
+     *         GitHub Link: https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
+     * EFFECTS: Converts the current object to a JSONObject
+     */
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("id", id);
+        json.put("name", name);
+        json.put("rating", rating);
+        json.put("numRatings", numRatings);
+        return json;
+    }
+
+    /*
+     * EFFECTS: persistence utility method
+     *          returns the restaurant counter
+     */
+    public static int getCounter() {
+        return counter;
+    }
+
+    /*
+     * MODIFIES: Restaurant class
+     * EFFECTS: persistence utility method
+     *          sets class counter to a value
+     */
+    public static void setCounter(int value) {
+        counter = value;
     }
 }

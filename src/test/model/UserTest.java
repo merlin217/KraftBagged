@@ -24,8 +24,6 @@ public class UserTest {
     @Test
     // Test id, name and lastVisited
     public void test1() {
-        assertEquals(1, user1.getId());
-        assertEquals(2, user2.getId());
         assertEquals("TestUser1", user1.getUsername());
         assertEquals("TestUser2", user2.getUsername());
         assertEquals(-1, user1.getLastVisitedId());
@@ -53,9 +51,11 @@ public class UserTest {
     public void test3() {
         RestaurantList testList = new RestaurantList();
         testList.add(Arrays.asList(restaurant1, restaurant2));
+        assertEquals(0, user1.numOfLists());
         user1.addList(testList);
-        assertEquals(2, user1.getAllLists().get(0).size());
+        assertEquals(1,user1.numOfLists());
+        assertEquals(2, user1.getList(0).size());
         testList.add(restaurant3);
-        assertEquals(3, user1.getAllLists().get(0).size());
+        assertEquals(3, user1.getList(0).size());
     }
 }

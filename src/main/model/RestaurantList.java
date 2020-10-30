@@ -1,5 +1,8 @@
 package model;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -123,5 +126,26 @@ public class RestaurantList {
     // EFFECTS: overloads the above method, where last visited is not defined
     public Restaurant suggestRandom() {
         return suggestRandom(-1);
+    }
+
+    /*
+     * EFFECTS: Converts the current object to a JSONObject
+     */
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("name", name);
+        json.put("restaurants", restaurantsToJson());
+        return json;
+    }
+
+    // EFFECTS: returns restaurant objects in restaurants as a json array
+    public JSONArray restaurantsToJson() {
+        JSONArray jsonArray = new JSONArray();
+
+        for (Restaurant r : restaurants) {
+            jsonArray.put(r.toJson());
+        }
+
+        return jsonArray;
     }
 }

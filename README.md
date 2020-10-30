@@ -16,5 +16,5 @@ It is sometimes difficult to keep track of the number of options for lunch or su
 - As a user, I want to be able to add individual restaurants, or a collection of restaurants to my personal list
 - As a user, I want to receive a random restaurant suggestion from the list when prompting for one
 - As a user, I want to be able to give individual restaurants a rating on a scale of one to five
-- As a user, I want to be able to save my lists and ratings from the main menu
-- As a returning user (someone who has entered the same username in a previously saved session), I want to be given the option to load my data when starting up the application. 
+- As a user, I want to be able to save my lists and ratings (current profile) from the main menu
+- As a returning user (someone who has entered the same username in a previously saved session), I want to be able to load my data when starting up the application. 

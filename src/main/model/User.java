@@ -1,17 +1,19 @@
 package model;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /*
- * User object with unique id.
+ * User object, initialised when app starts
  *  Can have multiple RestaurantLists
  *  Keeps track of all restaurant ratings the user has made
  *  Keeps track of the last restaurant the user visited
  */
 public class User {
-    private static int counter = 0;
-    private int id;
     private String userName;
 
     // ID of the last restaurant the user visited
@@ -19,7 +21,7 @@ public class User {
     // A user can have multiple restaurant lists
     private ArrayList<RestaurantList> allLists;
     // Keeps track of all ratings the user has made
-    private HashMap<Integer, Double> allRatings = new HashMap<>();
+    private Map<Integer, Integer> allRatings = new HashMap<>();
 
     /*
      * EFFECTS: constructs a User object;
@@ -27,7 +29,6 @@ public class User {
      *          initiates myLists as an arraylist of RestaurantLists,
      */
     public User(String userName) {
-        this.id = ++counter;
         this.userName = userName;
         this.lastVisitedId = -1;
         this.allLists = new ArrayList<RestaurantList>();
@@ -37,25 +38,34 @@ public class User {
         return userName;
     }
 
-    public int getId() {
-        return id;
-    }
-
     public int getLastVisitedId() {
         return lastVisitedId;
     }
 
-    public HashMap<Integer, Double> getAllRatings() {
+    public Map<Integer, Integer> getAllRatings() {
         return allRatings;
     }
 
-    public ArrayList<RestaurantList> getAllLists() {
-        return allLists;
+    public void setLastVisitedId(int id) {
+        lastVisitedId = id;
     }
 
-    /*
-     * EFFECTS: adds a RestaurantList object to myLists
-     */
+    // EFFECTS: returns the number of restaurant lists
+    public int numOfLists() {
+        return allLists.size();
+    }
+
+    // EFFECTS: Returns one of the restaurant lists by index
+    public RestaurantList getList(int index) {
+        return allLists.get(index);
+    }
+
+    // EFFECTS: puts score to a corresponding id in allLists HashMap
+    public void addRating(int id, int score) {
+        allRatings.put(id, score);
+    }
+
+    // EFFECTS: adds a RestaurantList object to myLists
     public void addList(RestaurantList someList) {
         allLists.add(someList);
     }
@@ -65,7 +75,7 @@ public class User {
      * EFFECTS: updates lastVisited
      */
     public void visit(Restaurant restaurant) {
-        lastVisitedId = restaurant.getId();
+        setLastVisitedId(restaurant.getId());
     }
 
     /*
@@ -73,9 +83,9 @@ public class User {
      * EFFECTS: add/update a rating entry in myRatings
      *          updates the score in the corresponding restaurant
      */
-    public void rate(Restaurant restaurant, double score) {
-        allRatings.put(restaurant.getId(), score);
-        restaurant.updateRating(score);
+    public void rate(Restaurant restaurant, int score) {
+        addRating(restaurant.getId(), score);
+        restaurant.updateRating((double)score);
     }
 
     /*
@@ -91,5 +101,46 @@ public class User {
      */
     public boolean hasRatedRestaurant(int id) {
         return allRatings.containsKey(id);
+    }
+
+    /*
+     * EFFECTS: Converts the user class to a json object
+     */
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("userName", userName);
+        json.put("lastVisitedId",lastVisitedId);
+        json.put("allLists", allListsToJson());
+        json.put("allRatings", allRatingsToJson());
+
+        return json;
+    }
+
+    /*
+     * EFFECTS: Converts each RestaurantList in allLists to a json object,
+     *          then return them as a JSONArray
+     */
+    public JSONArray allListsToJson() {
+        JSONArray json = new JSONArray();
+
+        for (RestaurantList rl : allLists) {
+            json.put(rl.toJson());
+        }
+
+        return json;
+    }
+
+    /*
+     * EFFECTS: convert allRatings Map to a json object
+     *          each key is treated as a field of the object
+     */
+    public JSONObject allRatingsToJson() {
+        JSONObject json = new JSONObject();
+
+        for (Integer id : allRatings.keySet()) {
+            json.put(id.toString(), allRatings.get(id));
+        }
+
+        return json;
     }
 }
