@@ -128,9 +128,9 @@ public class WhereToEatApp {
             case "s":
                 saveUserProfile();
                 break;
-            default:
-                System.out.println("Selection not valid...");
-                break;
+//            default:
+//                System.out.println("Selection not valid...");
+//                break;
         }
     }
 
