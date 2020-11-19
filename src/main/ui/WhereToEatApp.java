@@ -9,6 +9,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 
+/**
+ * The Command Line Interface of the app
+ */
 public class WhereToEatApp {
     private Scanner input;
     private User user1;
@@ -91,12 +94,15 @@ public class WhereToEatApp {
         return index;
     }
 
+    /*
+     * Prints all menu options
+     */
     private void printMenu() {
         System.out.printf("\nWelcome, %s. Your current list is (%s). ",
                 user1.getUsername(), selectedList.getName());
         System.out.println("Please Select from:");
         System.out.println("\t1 -> Add A Restaurant");
-        System.out.println("\t2 -> Add Restaurants From A List");
+        System.out.println("\t2 -> Add Restaurants From Another List");
         System.out.println("\t3 -> Rate A Restaurant");
         System.out.println("\t4 -> Get A Suggestion");
         System.out.println("\t5 -> View Restaurants");
@@ -105,32 +111,50 @@ public class WhereToEatApp {
         System.out.println("\tq -> Quit");
     }
 
+    /*
+     * Processes menu commands to trigger the right methods
+     */
     private void processCommand(String cmd) {
         switch (cmd) {
             case "1":
-                doAddRestaurant();
+                promptAddChoice();
                 break;
             case "2":
-                doAddList();
+                doGetSuggestion();
                 break;
             case "3":
                 doRateRestaurant();
                 break;
             case "4":
-                doGetSuggestion();
-                break;
-            case "5":
                 doViewRestaurants();
                 break;
-            case "6":
+            case "5":
                 doNewList();
                 break;
             case "s":
                 saveUserProfile();
                 break;
-//            default:
-//                System.out.println("Selection not valid...");
-//                break;
+            default:
+                System.out.println("Selection not valid...");
+                break;
+        }
+    }
+
+    /*
+     * Second-layer menu.
+     * Ask if user wants to add a new restaurant or add all restaurants from a list
+     */
+    private void promptAddChoice() {
+        System.out.println("Add a single restaurant or add from another list? ");
+        System.out.println("\t1 -> Add A Single Restaurant");
+        System.out.println("\t2 -> Add Restaurants From Another List");
+
+        int choice = promptForIndex("Enter (1) or (2): ", 1, 2);
+        switch (choice) {
+            case 1:
+                doAddRestaurant();
+            case 2:
+                doAddList();
         }
     }
 
@@ -234,6 +258,9 @@ public class WhereToEatApp {
         }
     }
 
+    /*
+     * Prints all restaurants on the current list
+     */
     private void doViewRestaurants() {
         printRestaurants();
         promptForString("\nEnter any key to return to menu: ");
