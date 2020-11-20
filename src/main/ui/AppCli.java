@@ -12,7 +12,7 @@ import java.util.Scanner;
 /**
  * The Command Line Interface of the app
  */
-public class WhereToEatApp {
+public class AppCli {
     private Scanner input;
     private User user1;
     private RestaurantList selectedList;
@@ -24,7 +24,7 @@ public class WhereToEatApp {
     /*
      * Partial code borrowed from CPSC210/TellerApp
      */
-    public WhereToEatApp() {
+    public AppCli() {
         boolean keepGoing = true;
         String command;
 

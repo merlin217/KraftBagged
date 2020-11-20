@@ -88,14 +88,24 @@ public class Restaurant {
     }
 
     /*
-     * EFFECTS: returns a string representation of a restaurant object
+     * EFFECTS: returns a string containing information about this restaurant
      */
     @Override
     public String toString() {
-        String outputStr = String.format(
-                "[id = %d, name = %s, rating = %.2f, numRatings = %d]",
-                id, name, rating, numRatings);
-        return outputStr;
+        String output = String.format("%s | Avg Rating: %d | ID: %d",
+                getName(), getRatingRounded(), getId());
+        return output;
+    }
+
+    /*
+     * EFFECTS: return true if id or name are the same
+     * REQUIRES: other to be of type Restaurant
+     */
+    @Override
+    public boolean equals(Object other) {
+        Restaurant otherRestaurant = (Restaurant) other;
+        return (this.getId() == otherRestaurant.getId()
+                || this.getName().equals(otherRestaurant.getName()));
     }
 
     /*

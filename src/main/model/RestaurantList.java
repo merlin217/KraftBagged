@@ -148,4 +148,10 @@ public class RestaurantList {
 
         return jsonArray;
     }
+
+    // EFFECTS: toString() returns the name of this restaurant list only
+    @Override
+    public String toString() {
+        return this.name;
+    }
 }

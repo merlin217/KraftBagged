@@ -27,6 +27,8 @@ public class RestaurantListTest {
         list1.setName("Lunch At Work");
         assertEquals("Lunch At Work", list1.getName());
         assertEquals("Dinner Deliveries", list2.getName());
+        assertEquals("Lunch At Work", list1.toString());
+        assertEquals("Dinner Deliveries", list2.toString());
     }
 
     @Test

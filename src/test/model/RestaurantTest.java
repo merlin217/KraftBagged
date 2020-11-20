@@ -3,7 +3,7 @@ package model;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class RestaurantTest {
@@ -25,7 +25,7 @@ public class RestaurantTest {
         assertEquals("John's", restaurant2.getName());
         assertEquals("Jack's", restaurant3.getName());
 
-        String expected = "[id = 3, name = Jack's, rating = 0.00, numRatings = 0]";
+        String expected = "Jack's | Avg Rating: 0 | ID: 3";
         assertEquals(expected, restaurant3.toString());
     }
 
@@ -42,6 +42,16 @@ public class RestaurantTest {
 
         restaurant2.updateRating(4);
         assertEquals(4, restaurant2.getRatingRounded());
+    }
+
+    @Test
+    public void testEquals() {
+        Restaurant restaurant4 = new Restaurant("Frank's");
+        Restaurant restaurant5 = restaurant1;
+        
+        assertTrue(restaurant1.equals(restaurant4));
+        assertTrue(restaurant1.equals(restaurant5));
+        assertFalse(restaurant1.equals(restaurant2));
     }
 
 
