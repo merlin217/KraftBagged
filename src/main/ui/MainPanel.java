@@ -54,8 +54,6 @@ public class MainPanel extends JPanel
         super(new BorderLayout());
 
         initUserProfile(username);
-        // add data into list models
-        setUpListModels();
         // set up lists to be displayed
         setUpLists();
 
@@ -93,6 +91,7 @@ public class MainPanel extends JPanel
         try {
             currentUser = jsonReader.read();
             System.out.println("User profile found! "); // TODO
+
         } catch (IOException e) {
             System.out.println("Error occurred when reading " + userFile); // TODO
         }
@@ -112,32 +111,14 @@ public class MainPanel extends JPanel
     }
 
     /**
-     * EFFECTS: read currentUser data into list models
-     */
-    void setUpListModels() {
-        Restaurant r1 = new Restaurant("McDonald's");
-        Restaurant r2 = new Restaurant("Starbucks");
-        Restaurant r3 = new Restaurant("Green Dragon");
-        Restaurant r4 = new Restaurant("Cactus");
-        RestaurantList rl1 = new RestaurantList("La1");
-        RestaurantList rl2 = new RestaurantList("La2");
-
-        rl1.add(r1);
-        rl1.add(r2);
-        rl2.add(r3);
-        rl2.add(r4);
-
-        rightListModel = new DefaultListModel<Restaurant>();
-        leftListModel = new DefaultListModel<RestaurantList>();
-//        leftListModel.addElement(rl1);
-//        leftListModel.addElement(rl2);
-        updateLeftList();
-    }
-
-    /**
-     * EFFECTS: add listModels to corresponding lists, and set up display settings
+     * EFFECTS: set up list models, and
+     *          add listModels to corresponding lists, and set up display settings
      */
     private void setUpLists() {
+        rightListModel = new DefaultListModel<Restaurant>();
+        leftListModel = new DefaultListModel<RestaurantList>();
+        updateLeftList();
+
         leftList = new JList(leftListModel);
         leftList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         leftList.setSelectedIndex(-1);

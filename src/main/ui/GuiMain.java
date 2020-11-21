@@ -26,7 +26,7 @@ public class GuiMain {
         loginFrame.setVisible(false);
 
         //Create and set up the window.
-        JFrame frame = new JFrame("MainPanel");
+        JFrame frame = new JFrame(username + "'s Restaurants");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //Create and set up the content pane.
