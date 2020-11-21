@@ -32,10 +32,4 @@ public class RestrListInputFrame extends InputFrame {
     public RestaurantList getRestrList() {
         return new RestaurantList(nameField.getText());
     }
-
-    // Test method
-    public static void main(String[] args) {
-        JFrame f = new RestrListInputFrame();
-        f.setVisible(true);
-    }
 }

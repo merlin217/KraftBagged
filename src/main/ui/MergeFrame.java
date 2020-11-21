@@ -35,13 +35,7 @@ public class MergeFrame extends JFrame
                 + listModel.getElementAt(current).getName();
         prompt.setText("<html><p style=\"width:150px\">" + text + "</p></html>");
 
-        // Set up the main list
-        list = new JList(listModel);
-        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        list.setSelectedIndex(-1);
-        list.addListSelectionListener(this);
-        list.setVisibleRowCount(5);
-        list.setFixedCellWidth(200);
+        setupList();
         JScrollPane scrollPane = new JScrollPane(list);
 
         // Set up the button
@@ -53,6 +47,16 @@ public class MergeFrame extends JFrame
         add(scrollPane);
         add(mergeBtn);
         pack();
+    }
+
+    // Set up the main list
+    private void setupList() {
+        list = new JList(listModel);
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        list.setSelectedIndex(-1);
+        list.addListSelectionListener(this);
+        list.setVisibleRowCount(5);
+        list.setFixedCellWidth(200);
     }
 
     public void addListener(ActionListener listener) {

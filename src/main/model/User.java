@@ -70,6 +70,11 @@ public class User {
         allLists.add(someList);
     }
 
+    // EFFECTS: remove (and return) a list at specified index
+    public RestaurantList removeListAt(int idx) {
+        return allLists.remove(idx);
+    }
+
     /*
      * REQUIRES: restaurant is not null
      * EFFECTS: updates lastVisited

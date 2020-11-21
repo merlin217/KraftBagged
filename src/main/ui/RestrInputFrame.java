@@ -50,10 +50,4 @@ public class RestrInputFrame extends InputFrame {
             return new Restaurant(nameField.getText(), rating);
         }
     }
-
-    // Test method
-    public static void main(String[] args) {
-        JFrame f = new RestrInputFrame();
-        f.setVisible(true);
-    }
 }

@@ -15,6 +15,12 @@
                     "rating": 0,
                     "id": 2,
                     "numRatings": 0
+                },
+                {
+                    "name": "something",
+                    "rating": 0,
+                    "id": 9,
+                    "numRatings": 0
                 }
             ]
         },

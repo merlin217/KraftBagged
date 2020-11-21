@@ -2,27 +2,39 @@ package ui;
 
 import model.Restaurant;
 import model.RestaurantList;
+import model.User;
+import persistence.JsonReader;
+import persistence.JsonWriter;
 
 import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
 /**
+ * The main GUI class
+ *
  * Modified from:
  *  https://docs.oracle.com/javase/tutorial/uiswing/examples/components
  *    /ListDemoProject/src/components/ListDemo.java
  */
 
 public class MainPanel extends JPanel
-        implements ListSelectionListener {
+        implements ListSelectionListener, ActionListener {
 
     private static final String ADD_RESTAURANT = "Add Restaurant";
     private static final String ADD_LIST = "Add New List";
     private static final String MERGE_LISTS = "Merge Lists";
     private static final String SAVE = "Save Profile";
     private static final int WIDTH = 500;
+
+    private String userFile; // Location of current user's savefile
+    private User currentUser; // current user object
+    private JsonWriter jsonWriter;
+    private JsonReader jsonReader;
 
     private JList leftList;
     private JList rightList;
@@ -38,9 +50,10 @@ public class MainPanel extends JPanel
     private MergeFrame mergeFrame;
 
     // Setup a panel with two JLists one at LINE_START, one at CENTER
-    public MainPanel() {
+    public MainPanel(String username) {
         super(new BorderLayout());
 
+        initUserProfile(username);
         // add data into list models
         setUpListModels();
         // set up lists to be displayed
@@ -61,24 +74,45 @@ public class MainPanel extends JPanel
         add(buttonPane, BorderLayout.PAGE_END);
         setPreferredSize(new Dimension(WIDTH, 400));
 
-        setUpHiddenFrames();
+        setUpSecondaryFrames();
+    }
+
+    /**
+     * EFFECTS: if a file of the specified name does not exist, initialise a new User
+     *          else, try reading user object from the file
+     */
+    private void initUserProfile(String username) {
+        userFile = String.format("./data/%s.json", username);
+        File destination = new File(userFile);
+        if (!destination.exists()) {
+            currentUser = new User(username);
+            return;
+        }
+
+        jsonReader = new JsonReader(userFile);
+        try {
+            currentUser = jsonReader.read();
+            System.out.println("User profile found! "); // TODO
+        } catch (IOException e) {
+            System.out.println("Error occurred when reading " + userFile); // TODO
+        }
     }
 
     /**
      * EFFECTS: set up the secondary (pop-up) frames
      */
-    private void setUpHiddenFrames() {
+    private void setUpSecondaryFrames() {
         restrInputFrame = new RestrInputFrame();
         restrInputFrame.setVisible(false);
-        restrInputFrame.addListener(new SubmitButtonListener());
+        restrInputFrame.addListener(new SubmitButtonListener(this));
 
         listInputFrame = new RestrListInputFrame();
         listInputFrame.setVisible(false);
-        listInputFrame.addListener(new SubmitButtonListener());
+        listInputFrame.addListener(new SubmitButtonListener(this));
     }
 
     /**
-     * EFFECTS: read data into list models
+     * EFFECTS: read currentUser data into list models
      */
     void setUpListModels() {
         Restaurant r1 = new Restaurant("McDonald's");
@@ -95,8 +129,9 @@ public class MainPanel extends JPanel
 
         rightListModel = new DefaultListModel<Restaurant>();
         leftListModel = new DefaultListModel<RestaurantList>();
-        leftListModel.addElement(rl1);
-        leftListModel.addElement(rl2);
+//        leftListModel.addElement(rl1);
+//        leftListModel.addElement(rl2);
+        updateLeftList();
     }
 
     /**
@@ -122,21 +157,21 @@ public class MainPanel extends JPanel
     private void setUpButtons(JPanel panel) {
         addRestaurantBtn = new JButton(ADD_RESTAURANT);
         addRestaurantBtn.setActionCommand(ADD_RESTAURANT);
-        addRestaurantBtn.addActionListener(new MainButtonsListener());
+        addRestaurantBtn.addActionListener(this);
         addRestaurantBtn.setEnabled(false);
 
         JButton addListBtn = new JButton(ADD_LIST);
         addListBtn.setActionCommand(ADD_LIST);
-        addListBtn.addActionListener(new MainButtonsListener());
+        addListBtn.addActionListener(this);
 
         mergeListBtn = new JButton(MERGE_LISTS);
         mergeListBtn.setActionCommand(MERGE_LISTS);
-        mergeListBtn.addActionListener(new MainButtonsListener());
+        mergeListBtn.addActionListener(this);
         mergeListBtn.setEnabled(false);
 
         saveBtn = new JButton(SAVE);
         saveBtn.setActionCommand(SAVE);
-        //saveBtn.addActionListener();
+        saveBtn.addActionListener(this);
 
         panel.add(addRestaurantBtn);
         panel.add(Box.createHorizontalStrut(5));
@@ -148,13 +183,25 @@ public class MainPanel extends JPanel
     }
 
     /**
-     * EFFECTS: add elements of the currently selected restaurantList into the rightList column
+     * EFFECTS: clear leftList and read all the data from current user
+     */
+    private void updateLeftList() {
+        leftListModel.clear();
+        for (int i = 0; i < currentUser.numOfLists(); i++) {
+            leftListModel.addElement(currentUser.getList(i));
+        }
+    }
+
+    /**
+     * EFFECTS: refresh elements of the currently selected restaurantList into the rightList column
      */
     void updateRightList() {
         rightListModel.clear();
         RestaurantList selected = getSelectedRestaurantList();
-        for (int i = 0; i < selected.size(); i++) {
-            rightListModel.addElement(selected.get(i));
+        if (selected != null) {
+            for (int i = 0; i < selected.size(); i++) {
+                rightListModel.addElement(selected.get(i));
+            }
         }
     }
 
@@ -170,13 +217,17 @@ public class MainPanel extends JPanel
     public void valueChanged(ListSelectionEvent e) {
         if (!leftList.getValueIsAdjusting()) {
             // When there is no selection
-            if (leftList.getSelectedIndex() == -1 || leftListModel.size() <= 1) {
+            if (leftList.getSelectedIndex() == -1) {
                 addRestaurantBtn.setEnabled(false);
                 mergeListBtn.setEnabled(false);
             } else {
                 updateRightList();
                 addRestaurantBtn.setEnabled(true);
                 mergeListBtn.setEnabled(true);
+            }
+
+            if (leftListModel.getSize() <= 1) {
+                mergeListBtn.setEnabled(false);
             }
         }
     }
@@ -194,28 +245,47 @@ public class MainPanel extends JPanel
     }
 
     /**
-     * EFFECTS: triggers correct windows depending on which button is pressed
+     * triggers correct windows depending on which button is pressed
      */
-    class MainButtonsListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (e.getActionCommand().equals(ADD_RESTAURANT)) {
-                // Reset and open the inputFrame window
-                restrInputFrame.resetText();
-                restrInputFrame.setVisible(true);
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getActionCommand().equals(ADD_RESTAURANT)) {
+            // Reset and open the inputFrame window
+            restrInputFrame.resetText();
+            restrInputFrame.setVisible(true);
+        }
+        if (e.getActionCommand().equals(ADD_LIST)) {
+            listInputFrame.resetText();
+            listInputFrame.setVisible(true);
+        }
+        if (e.getActionCommand().equals(MERGE_LISTS)) {
+            mergeFrame = new MergeFrame(leftListModel, leftList.getSelectedIndex());
+            mergeFrame.addListener(new MergeButtonListener());
+            mergeFrame.setVisible(true);
+        }
+        if (e.getActionCommand().equals(SAVE)) {
+            int result = JOptionPane.showConfirmDialog(this,
+                    "Save current profile? ", "Saving Profile",
+                    JOptionPane.YES_NO_OPTION);
+            if (result == JOptionPane.YES_OPTION) {
+                saveUserProfile();
             }
-            if (e.getActionCommand().equals(ADD_LIST)) {
-                listInputFrame.resetText();
-                listInputFrame.setVisible(true);
-            }
-            if (e.getActionCommand().equals(MERGE_LISTS)) {
-                mergeFrame = new MergeFrame(leftListModel, leftList.getSelectedIndex());
-                mergeFrame.addListener(new MergeButtonListener());
-                mergeFrame.setVisible(true);
-            }
-            if (e.getActionCommand().equals(SAVE)) {
-                // TODO: confirm saving profile
-            }
+        }
+    }
+
+    /**
+     * saves current user to 'userFile'
+     */
+    private void saveUserProfile() {
+        userFile = String.format("./data/%s.json", currentUser.getUsername());
+        jsonWriter = new JsonWriter(userFile);
+        try {
+            jsonWriter.open();
+            jsonWriter.write(currentUser);
+            jsonWriter.close();
+            System.out.println("Saved " + currentUser.getUsername() + " to " + userFile);
+        } catch (IOException e) {
+            System.out.println("Unable to write to file: " + userFile);
         }
     }
 
@@ -226,6 +296,12 @@ public class MainPanel extends JPanel
      *          add the new RestaurantList to leftList and update rightList
      */
     class SubmitButtonListener implements ActionListener {
+        Component parent;
+
+        public SubmitButtonListener(Component parentComp) {
+            parent = parentComp;
+        }
+
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getActionCommand().equals("Submit")) {
@@ -234,19 +310,20 @@ public class MainPanel extends JPanel
                     restaurant = restrInputFrame.getRestaurant();
                     // if not successfully added to list
                     if (!getSelectedRestaurantList().add(restaurant)) {
-                        // TODO: notification window saying restaurant already exists
+                        JOptionPane.showMessageDialog(parent, "Restaurant already exists! ");
                     } else {
                         updateRightList();
                     }
                     restrInputFrame.setVisible(false);
                 } catch (NumberFormatException exception) {
-                    // TODO: notification window saying rating is invalid
+                    JOptionPane.showMessageDialog(parent, "Invalid Rating. Please enter an integer. ");
                 }
             }
 
             if (e.getActionCommand().equals("Submit List")) {
                 RestaurantList list = listInputFrame.getRestrList();
-                leftListModel.addElement(list);
+                currentUser.addList(list);
+                updateLeftList();
                 leftList.setSelectedIndex(leftListModel.size() - 1);
                 updateRightList();
                 listInputFrame.setVisible(false);
@@ -267,42 +344,13 @@ public class MainPanel extends JPanel
                 int selectedIdx = mergeFrame.getSelectedIndex();
                 if (selectedIdx != -1) {
                     current.add(leftListModel.getElementAt(selectedIdx).getRestaurants());
-                    leftListModel.remove(selectedIdx);
+                    currentUser.removeListAt(selectedIdx);
+                    updateLeftList();
+                    leftList.setSelectedIndex(-1);
                     updateRightList();
                 }
                 mergeFrame.setVisible(false);
             }
         }
-    }
-
-
-    /**
-     * Create the GUI and show it.  For thread safety,
-     * this method should be invoked from the
-     * event-dispatching thread.
-     */
-    private static void createAndShowGUI() {
-        //Create and set up the window.
-        JFrame frame = new JFrame("MainPanel");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        //Create and set up the content pane.
-        JComponent newContentPane = new MainPanel();
-        newContentPane.setOpaque(true); //content panes must be opaque
-        frame.setContentPane(newContentPane);
-
-        //Display the window.
-        frame.pack();
-        frame.setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        //Schedule a job for the event-dispatching thread:
-        //creating and showing this application's GUI.
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        });
     }
 }
