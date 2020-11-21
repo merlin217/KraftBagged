@@ -10,7 +10,7 @@ import javax.sound.sampled.*;
  */
 
 public class SoundPlayer {
-    String chimeFile = "C:\\Dev\\repos\\IdeaProjects\\project_c9j7l\\data\\chime-login.wav";
+    String chimeFile = "./data/chime-login.wav";
 
     void playChime() throws IOException,
             UnsupportedAudioFileException, LineUnavailableException {

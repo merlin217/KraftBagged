@@ -81,13 +81,14 @@ public class MainPanel extends JPanel
         File destination = new File(userFile);
         if (!destination.exists()) {
             currentUser = new User(username);
+            greetUser(true);
             return;
         }
 
         JsonReader jsonReader = new JsonReader(userFile);
         try {
             currentUser = jsonReader.read();
-            greetUser();
+            greetUser(false);
 
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this,
@@ -95,15 +96,32 @@ public class MainPanel extends JPanel
         }
     }
 
-    private void greetUser() {
+    /**
+     * Plays a sound and display a custom icon when a user logs in
+     */
+    private void greetUser(boolean isNew) {
+        // Source: https://www.kronos.com/industry-solutions/food-service/food-service-action
+        ImageIcon greetIcon = new ImageIcon("./data/Kronos-Fork-Spoon-cropped.gif");
         SoundPlayer player = new SoundPlayer();
+        String title;
+        String greetingMsg;
+
         try {
             player.playChime();
         } catch (Exception e) {
             System.out.println("Exception when playing chime sound: \n" + e.toString());
         }
+
+        if (isNew) {
+            title = "New User";
+            greetingMsg = "Welcome, " + currentUser.getUsername() + "! ";
+        } else {
+            title = "User Found";
+            greetingMsg = "Welcome back, " + currentUser.getUsername() + "! ";
+        }
+
         JOptionPane.showMessageDialog(this,
-                "Welcome back, " + currentUser.getUsername() + "! ");
+                greetingMsg, title, JOptionPane.ERROR_MESSAGE, greetIcon);
     }
 
     /**
