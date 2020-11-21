@@ -33,8 +33,6 @@ public class MainPanel extends JPanel
 
     private String userFile; // Location of current user's savefile
     private User currentUser; // current user object
-    private JsonWriter jsonWriter;
-    private JsonReader jsonReader;
 
     private JList leftList;
     private JList rightList;
@@ -42,7 +40,6 @@ public class MainPanel extends JPanel
     private DefaultListModel<Restaurant> rightListModel;
     private JButton addRestaurantBtn;
     private JButton mergeListBtn;
-    private JButton saveBtn;
 
     // secondary frames:
     private RestrInputFrame restrInputFrame;
@@ -87,14 +84,26 @@ public class MainPanel extends JPanel
             return;
         }
 
-        jsonReader = new JsonReader(userFile);
+        JsonReader jsonReader = new JsonReader(userFile);
         try {
             currentUser = jsonReader.read();
-            System.out.println("User profile found! "); // TODO
+            greetUser();
 
         } catch (IOException e) {
-            System.out.println("Error occurred when reading " + userFile); // TODO
+            JOptionPane.showMessageDialog(this,
+                                    "Error occurred when reading " + userFile);
         }
+    }
+
+    private void greetUser() {
+        SoundPlayer player = new SoundPlayer();
+        try {
+            player.playChime();
+        } catch (Exception e) {
+            System.out.println("Exception when playing chime sound: \n" + e.toString());
+        }
+        JOptionPane.showMessageDialog(this,
+                "Welcome back, " + currentUser.getUsername() + "! ");
     }
 
     /**
@@ -150,7 +159,7 @@ public class MainPanel extends JPanel
         mergeListBtn.addActionListener(this);
         mergeListBtn.setEnabled(false);
 
-        saveBtn = new JButton(SAVE);
+        JButton saveBtn = new JButton(SAVE);
         saveBtn.setActionCommand(SAVE);
         saveBtn.addActionListener(this);
 
@@ -259,7 +268,7 @@ public class MainPanel extends JPanel
      */
     private void saveUserProfile() {
         userFile = String.format("./data/%s.json", currentUser.getUsername());
-        jsonWriter = new JsonWriter(userFile);
+        JsonWriter jsonWriter = new JsonWriter(userFile);
         try {
             jsonWriter.open();
             jsonWriter.write(currentUser);
@@ -294,8 +303,8 @@ public class MainPanel extends JPanel
                         JOptionPane.showMessageDialog(parent, "Restaurant already exists! ");
                     } else {
                         updateRightList();
+                        restrInputFrame.setVisible(false);
                     }
-                    restrInputFrame.setVisible(false);
                 } catch (NumberFormatException exception) {
                     JOptionPane.showMessageDialog(parent, "Invalid Rating. Please enter an integer. ");
                 }

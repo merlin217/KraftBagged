@@ -2,6 +2,7 @@ package ui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 
 /**
  * Individual JFrame responsible for entering the username
@@ -17,6 +18,8 @@ public class UsernameInputFrame extends InputFrame {
 
         JLabel nameLabel = new JLabel("Username");
 
+        submitBtn.setMnemonic(KeyEvent.VK_L);
+        submitBtn.setText("Login");
         submitBtn.setActionCommand("Login");
 
         add(nameLabel);

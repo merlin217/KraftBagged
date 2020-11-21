@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 /**
- * Base class for RestrInputFrame and RestrListInputFrame
+ * Base class for UsernameInputFrame, RestrInputFrame and RestrListInputFrame
  */
 public class InputFrame extends JFrame implements DocumentListener {
     JTextField nameField;
