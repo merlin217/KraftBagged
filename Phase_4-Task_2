@@ -1,0 +1,1 @@
+`ui` package includes a type hierarchy. `InputFrame` is the parent class and its sub-classes are `RestrInputFrame`, `UsernameInputFrame` and `RestrListInputFrame`. 
