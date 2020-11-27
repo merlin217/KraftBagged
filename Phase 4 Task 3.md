@@ -1,0 +1,2 @@
+- `InputFrame` should be an abstract class instead of a concrete one, since only instances of its subclasses are meant to be created
+- `MainPanel` is not very cohesive. To improve, methods related to reading and writing User objects should be extracted as an individual class.
