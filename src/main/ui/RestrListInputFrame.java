@@ -1,6 +1,5 @@
 package ui;
 
-import model.Restaurant;
 import model.RestaurantList;
 
 import javax.swing.*;
