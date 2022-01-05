@@ -2,7 +2,7 @@
 
 ## Introduction
 
-'KraftBagged' is inspired by 'LetterBoxd'. Whereas 'LetterBoxd' provides a platform to rate movies and create to-watch lists, 'KraftBagged' allows users to rate restaurants and manage to-eat lists. 
+'KraftBagged' allows users to rate restaurants and manage to-eat lists. 
 
 ### Functions
 The application allows the user to keep track of a 'to-eat' list of restaurants and suggests a random one from the pool each time the user prompts for one. It will allow users to rate restaurants and update their ratings. 
